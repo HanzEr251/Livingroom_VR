@@ -4,14 +4,7 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes:
-  - enabled: 1
-    path: Assets/Menu.unity
-    guid: 707c2f9985308384bb3369c2c534df3b
-  - enabled: 1
-    path: Assets/LivingRoom.unity
-    guid: b40e3271a29391f41a4f7d5a3248aeb9
+  m_Scenes: []
   m_configObjects:
-    Unity.XR.PXR.Settings: {fileID: 11400000, guid: 949cb20b59a62d4499b2d91d779067eb, type: 2}
-    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 242700c638e1a7743912b3b3ed245cb5, type: 2}
-    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 8408eadcb2801b14a9392bad1bcaf290, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 7f071f006ab3c804ea592718b6df6019, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 63babdbe4b93d8349bc779714769ba24, type: 2}
