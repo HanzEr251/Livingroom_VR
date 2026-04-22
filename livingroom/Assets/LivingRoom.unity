@@ -8793,7 +8793,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1178791450436251564, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_CameraYOffset
-      value: 2.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1178791450436251564, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_RequestedTrackingOriginMode
@@ -10690,7 +10690,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1442952891}
   m_LocalRotation: {x: 0.03347693, y: 0.02119878, z: 0.023549773, w: 0.99893713}
-  m_LocalPosition: {x: 0, y: 0, z: 2.81}
+  m_LocalPosition: {x: 0, y: 0, z: 2.78}
   m_LocalScale: {x: 0.0031728754, y: 0.0031728754, z: 0.0031728754}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -10699,7 +10699,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1.87, y: 2.42}
+  m_AnchoredPosition: {x: 1.88, y: 2.1}
   m_SizeDelta: {x: 1205.5, y: 525.00006}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1468817833
@@ -11371,7 +11371,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1995685296}
   m_HandleRect: {fileID: 1995685295}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 0.9999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
