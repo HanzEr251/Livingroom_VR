@@ -1,8 +1,10 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
 public class FamilyChatManager : MonoBehaviour
 {
+    [Header("VR UI")]
     public TMP_Text titleText;
     public TMP_Text roundText;
     public TMP_Text currentSpeakerText;
@@ -11,46 +13,95 @@ public class FamilyChatManager : MonoBehaviour
     public TMP_Text hintText;
     public TMP_InputField userInputField;
 
+    [Header("AI")]
+    public AIRelativeConfig relativeConfig;
+    public DeepSeekChatClient chatClient;
+
     private int round = 0;
-    private string currentSpeaker = "ÏµÍ³";
+    private string currentSpeaker = "ç³»ç»Ÿ";
+    private string aiSpeakerName = "AIäº²æˆš";
+    private bool waitingForResponse = false;
+
+    private void Awake()
+    {
+        if (chatClient == null)
+        {
+            chatClient = GetComponent<DeepSeekChatClient>();
+        }
+
+        if (relativeConfig != null && !string.IsNullOrWhiteSpace(relativeConfig.relativeName))
+        {
+            aiSpeakerName = relativeConfig.relativeName;
+        }
+    }
 
     public void StartChat()
     {
         round = 1;
-        currentSpeaker = "ÄÌÄÌ";
+        currentSpeaker = "æˆ‘";
+        waitingForResponse = false;
 
-        roundText.text = "µÚ " + round + " ÂÖ";
-        currentSpeakerText.text = "µ±Ç°·¢ÑÔÈË£º" + currentSpeaker;
-        chatHistoryText.text = "¡¾ÏµÍ³¡¿¼Ò×åÈºÁÄ¿ªÊ¼\n";
-        hintText.text = "ÌáÊ¾£ºÇëÊ¹ÓÃÓïÒô»òÎÄ×ÖÊäÈë";
+        roundText.text = $"ç¬¬ {round} è½®";
+        currentSpeakerText.text = $"å½“å‰å‘è¨€äººï¼š{currentSpeaker}";
+        chatHistoryText.text = "ç³»ç»Ÿï¼šå®¶åº­ç¾¤èŠå¼€å§‹ã€‚\n";
+        hintText.text = "æç¤ºï¼šå¯ä»¥æ‰“å­—ï¼Œæˆ–æŒ‰ä½è¯­éŸ³é”®è¾“å…¥ã€‚";
+
+        if (chatClient != null)
+        {
+            string systemPrompt = relativeConfig != null ? relativeConfig.systemPrompt : string.Empty;
+            chatClient.Initialize(systemPrompt);
+
+            if (relativeConfig != null && !string.IsNullOrWhiteSpace(relativeConfig.relativeName))
+            {
+                aiSpeakerName = relativeConfig.relativeName;
+            }
+        }
+        else
+        {
+            hintText.text = "æç¤ºï¼šæœªæ‰¾åˆ° DeepSeekChatClientï¼Œå½“å‰åªæ˜¾ç¤ºæœ¬åœ°æ¶ˆæ¯ã€‚";
+        }
     }
 
     public void NextTurn()
     {
-        string[] speakers = { "ÂèÂè", "°Ö°Ö", "Ò¯Ò¯" };
-        int idx = System.Array.IndexOf(speakers, currentSpeaker);
-        idx = (idx + 1) % speakers.Length;
-        currentSpeaker = speakers[idx];
+        // ä¿ç•™å›åˆæŒ‰é’®ï¼šå•äººæ¨¡å¼ä¸‹ä»…ä½œä¸ºè½®æ¬¡æ¨è¿›ã€‚
         round++;
+        currentSpeaker = "æˆ‘";
 
-        roundText.text = "µÚ " + round + " ÂÖ";
-        currentSpeakerText.text = "µ±Ç°·¢ÑÔÈË£º" + currentSpeaker;
-        chatHistoryText.text += "¡¾ÏµÍ³¡¿½øÈëµÚ " + round + " ÂÖ£¬µ±Ç°·¢ÑÔÈË£º" + currentSpeaker + "\n";
+        roundText.text = $"ç¬¬ {round} è½®";
+        currentSpeakerText.text = $"å½“å‰å‘è¨€äººï¼š{currentSpeaker}";
+        chatHistoryText.text += $"ç³»ç»Ÿï¼šè¿›å…¥ç¬¬ {round} è½®ã€‚\n";
     }
 
     public void EndChat()
     {
-        chatHistoryText.text += "¡¾ÏµÍ³¡¿ÈºÁÄ½áÊø\n";
-        hintText.text = "ÌáÊ¾£º±¾ÂÖ½áÊø";
+        chatHistoryText.text += "ç³»ç»Ÿï¼šç¾¤èŠç»“æŸã€‚\n";
+        hintText.text = "æç¤ºï¼šå¯¹è¯å·²ç»“æŸã€‚";
+        waitingForResponse = false;
     }
 
     public void SendText()
     {
-        string msg = userInputField.text.Trim();
-        if (string.IsNullOrEmpty(msg)) return;
+        if (waitingForResponse)
+        {
+            hintText.text = "æç¤ºï¼šAI æ­£åœ¨å›å¤ï¼Œè¯·ç¨å€™ã€‚";
+            return;
+        }
 
-        chatHistoryText.text += "¡¾ÎÒ¡¿" + msg + "\n";
-        userInputField.text = "";
+        string msg = userInputField.text.Trim();
+        if (string.IsNullOrEmpty(msg))
+            return;
+
+        AppendChatLine("æˆ‘", msg);
+        userInputField.text = string.Empty;
+
+        if (chatClient == null)
+        {
+            hintText.text = "æç¤ºï¼šæœªé…ç½® AI å®¢æˆ·ç«¯ï¼Œå½“å‰åªè®°å½•æœ¬åœ°æ¶ˆæ¯ã€‚";
+            return;
+        }
+
+        StartCoroutine(SendToAI(msg));
     }
 
     public void ClearInput()
@@ -65,6 +116,32 @@ public class FamilyChatManager : MonoBehaviour
 
     public void SetEmotionScore(string scoreText)
     {
-        emotionScoreText.text = "ÇéÉÌÆÀ¼Û£º" + scoreText;
+        emotionScoreText.text = "æƒ…ç»ªè¯„åˆ†ï¼š" + scoreText;
+    }
+
+    private IEnumerator SendToAI(string userText)
+    {
+        waitingForResponse = true;
+        hintText.text = "æç¤ºï¼šAI æ€è€ƒä¸­...";
+
+        yield return chatClient.SendChatRequest(
+            userText,
+            assistantReply =>
+            {
+                AppendChatLine(aiSpeakerName, assistantReply);
+                hintText.text = "æç¤ºï¼šæ”¶åˆ° AI å›å¤ã€‚";
+                waitingForResponse = false;
+            },
+            errorMessage =>
+            {
+                AppendChatLine("ç³»ç»Ÿ", $"AI è¯·æ±‚å¤±è´¥ï¼š{errorMessage}");
+                hintText.text = "æç¤ºï¼šAI è¯·æ±‚å¤±è´¥ï¼Œè¯·æ£€æŸ¥ Key æˆ–ç½‘ç»œã€‚";
+                waitingForResponse = false;
+            });
+    }
+
+    private void AppendChatLine(string speaker, string text)
+    {
+        chatHistoryText.text += $"{speaker}ï¼š{text}\n";
     }
 }
