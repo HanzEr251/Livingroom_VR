@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Net;
 using TMPro;
 using UnityEngine;
 
@@ -24,6 +25,9 @@ public class FamilyChatManager : MonoBehaviour
 
     private void Awake()
     {
+        // 全局 TLS 1.2 设置（保证所有 HTTPS 请求都用 TLS 1.2）
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
         if (chatClient == null)
         {
             chatClient = GetComponent<DeepSeekChatClient>();
@@ -48,6 +52,7 @@ public class FamilyChatManager : MonoBehaviour
 
         if (chatClient != null)
         {
+            // 确保 Initialize 在请求前执行
             string systemPrompt = relativeConfig != null ? relativeConfig.systemPrompt : string.Empty;
             chatClient.Initialize(systemPrompt);
 
@@ -64,7 +69,6 @@ public class FamilyChatManager : MonoBehaviour
 
     public void NextTurn()
     {
-        // 保留回合按钮：单人模式下仅作为轮次推进。
         round++;
         currentSpeaker = "我";
 
@@ -123,6 +127,9 @@ public class FamilyChatManager : MonoBehaviour
     {
         waitingForResponse = true;
         hintText.text = "提示：AI 思考中...";
+
+        // 延迟一帧，确保 DeepSeekChatClient 初始化完成
+        yield return null;
 
         yield return chatClient.SendChatRequest(
             userText,

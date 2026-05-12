@@ -11601,9 +11601,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   apiKey: sk-23f20be4f2a74ec7a83f4c55e0266db2
-  apiUrl: https://api.deepseek.cn/v1/chat/completions
+  apiUrl: https://api.deepseek.com/chat/completions
   model: deepseek-chat
-  ignoreSslErrors: 0
+  ignoreSslErrors: 1
   messageHistory: []
 --- !u!1001 &1539013962
 PrefabInstance:

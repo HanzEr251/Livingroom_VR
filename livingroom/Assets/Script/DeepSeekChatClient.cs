@@ -87,6 +87,12 @@ public class DeepSeekChatClient : MonoBehaviour
             yield break;
         }
 
+        if (!TryNormalizeApiUrl(apiUrl, out string finalApiUrl, out string apiUrlError))
+        {
+            onError?.Invoke(apiUrlError);
+            yield break;
+        }
+
         messageHistory.Add(new ChatMessage("user", userContent));
 
         DeepSeekRequest requestData = new DeepSeekRequest
@@ -98,10 +104,11 @@ public class DeepSeekChatClient : MonoBehaviour
         string jsonBody = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
 
-        using (UnityWebRequest request = new UnityWebRequest(apiUrl, UnityWebRequest.kHttpVerbPOST))
+        using (UnityWebRequest request = new UnityWebRequest(finalApiUrl, UnityWebRequest.kHttpVerbPOST))
         {
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
+            request.timeout = 30;
             request.SetRequestHeader("Content-Type", "application/json");
 
             if (ignoreSslErrors)
@@ -123,7 +130,15 @@ public class DeepSeekChatClient : MonoBehaviour
 #endif
             if (hasNetworkError)
             {
-                onError?.Invoke($"请求失败：{request.error}");
+                string networkError = request.error ?? "未知网络错误";
+                if (IsSslError(networkError))
+                {
+                    onError?.Invoke(
+                        $"SSL error: {networkError}. Check system clock, HTTPS access, and apiUrl uses https. For local testing only, enable ignoreSslErrors in Inspector.");
+                    yield break;
+                }
+
+                onError?.Invoke($"请求失败：{networkError}");
                 yield break;
             }
 
@@ -141,6 +156,60 @@ public class DeepSeekChatClient : MonoBehaviour
 
             
         }
+    }
+
+    private bool TryNormalizeApiUrl(string rawApiUrl, out string normalizedApiUrl, out string error)
+    {
+        normalizedApiUrl = null;
+        error = null;
+
+        string candidate = rawApiUrl?.Trim();
+        if (string.IsNullOrEmpty(candidate))
+        {
+            error = "apiUrl 为空，请在 Inspector 填写 DeepSeek 接口地址。";
+            return false;
+        }
+
+        if (!candidate.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
+            !candidate.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            candidate = "https://" + candidate;
+        }
+
+        if (!Uri.TryCreate(candidate, UriKind.Absolute, out Uri uri))
+        {
+            error = $"apiUrl 格式不正确：{rawApiUrl}";
+            return false;
+        }
+
+        if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+        {
+            error = $"apiUrl 必须以 http 或 https 开头：{candidate}";
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(uri.Host))
+        {
+            error = $"apiUrl 缺少主机名：{candidate}";
+            return false;
+        }
+
+        normalizedApiUrl = uri.AbsoluteUri;
+        return true;
+    }
+
+    private bool IsSslError(string error)
+    {
+        if (string.IsNullOrEmpty(error))
+        {
+            return false;
+        }
+
+        string text = error.ToLowerInvariant();
+        return text.Contains("ssl") ||
+               text.Contains("tls") ||
+               text.Contains("certificate") ||
+               text.Contains("handshake");
     }
 
     private string ParseAssistantAnswer(string json)
