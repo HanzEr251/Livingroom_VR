@@ -179,10 +179,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u9000\u51FA"
+  m_text: "\u573A\u666F2"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 798d124b3e4d21c49a2b4c1c7f6909db, type: 2}
-  m_sharedMaterial: {fileID: -8471025444022769197, guid: 798d124b3e4d21c49a2b4c1c7f6909db, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 111cbf2f30e93e64e8caa550a385d057, type: 2}
+  m_sharedMaterial: {fileID: -4393926379034531013, guid: 111cbf2f30e93e64e8caa550a385d057, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -494,7 +494,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 581416724}
         m_TargetAssemblyTypeName: Menu, Assembly-CSharp
-        m_MethodName: ExitGame
+        m_MethodName: GameScene2
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -734,7 +734,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 899677643}
         m_TargetAssemblyTypeName: Menu, Assembly-CSharp
-        m_MethodName: GameStart
+        m_MethodName: GameScene1
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1219,10 +1219,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u5F00\u59CB"
+  m_text: "\u573A\u666F1"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0ce2f27544c2d7049ba82ab2b0af9aa7, type: 2}
-  m_sharedMaterial: {fileID: -8759329741699288488, guid: 0ce2f27544c2d7049ba82ab2b0af9aa7, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 111cbf2f30e93e64e8caa550a385d057, type: 2}
+  m_sharedMaterial: {fileID: -4393926379034531013, guid: 111cbf2f30e93e64e8caa550a385d057, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
