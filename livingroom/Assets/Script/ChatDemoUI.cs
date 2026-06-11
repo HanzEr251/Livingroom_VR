@@ -32,7 +32,7 @@ public class ChatDemoUI : MonoBehaviour
             return;
         }
 
-        chatClient.Initialize(relativeConfig.systemPrompt);
+        chatClient.Initialize(relativeConfig.GetActiveSystemPrompt());
         sendButton.onClick.AddListener(OnSendButtonClicked);
         UpdateStatus("请在输入框中输入消息，然后点击发送。", false);
     }

@@ -22,6 +22,7 @@ public class FamilyChatManager : MonoBehaviour
     private string currentSpeaker = "系统";
     private string aiSpeakerName = "AI亲戚";
     private bool waitingForResponse = false;
+    private bool chatSessionInitialized = false;
 
     private void Awake()
     {
@@ -37,6 +38,8 @@ public class FamilyChatManager : MonoBehaviour
         {
             aiSpeakerName = relativeConfig.relativeName;
         }
+
+        EnsureChatClientInitialized();
     }
 
     public void StartChat()
@@ -52,14 +55,7 @@ public class FamilyChatManager : MonoBehaviour
 
         if (chatClient != null)
         {
-            // 确保 Initialize 在请求前执行
-            string systemPrompt = relativeConfig != null ? relativeConfig.systemPrompt : string.Empty;
-            chatClient.Initialize(systemPrompt);
-
-            if (relativeConfig != null && !string.IsNullOrWhiteSpace(relativeConfig.relativeName))
-            {
-                aiSpeakerName = relativeConfig.relativeName;
-            }
+            EnsureChatClientInitialized(forceReinitialize: true);
         }
         else
         {
@@ -104,6 +100,8 @@ public class FamilyChatManager : MonoBehaviour
             hintText.text = "提示：未配置 AI 客户端，当前只记录本地消息。";
             return;
         }
+
+        EnsureChatClientInitialized();
 
         StartCoroutine(SendToAI(msg));
     }
@@ -150,5 +148,27 @@ public class FamilyChatManager : MonoBehaviour
     private void AppendChatLine(string speaker, string text)
     {
         chatHistoryText.text += $"{speaker}：{text}\n";
+    }
+
+    private void EnsureChatClientInitialized(bool forceReinitialize = false)
+    {
+        if (chatClient == null)
+        {
+            return;
+        }
+
+        if (!forceReinitialize && chatSessionInitialized)
+        {
+            return;
+        }
+
+        string systemPrompt = relativeConfig != null ? relativeConfig.GetActiveSystemPrompt() : string.Empty;
+        chatClient.Initialize(systemPrompt);
+        chatSessionInitialized = true;
+
+        if (relativeConfig != null && !string.IsNullOrWhiteSpace(relativeConfig.relativeName))
+        {
+            aiSpeakerName = relativeConfig.relativeName;
+        }
     }
 }

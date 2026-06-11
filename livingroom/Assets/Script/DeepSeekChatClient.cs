@@ -23,6 +23,11 @@ public class DeepSeekRequest
 {
     public string model;
     public List<ChatMessage> messages;
+    public float temperature;
+    public float top_p;
+    public float frequency_penalty;
+    public float presence_penalty;
+    public int max_tokens;
 }
 
 [Serializable]
@@ -54,6 +59,22 @@ public class DeepSeekChatClient : MonoBehaviour
     public string model = "deepseek-chat";
     [Tooltip("仅用于开发测试：忽略 SSL 证书验证。生产环境请保持关闭。")]
     public bool ignoreSslErrors = false;
+
+    [Header("回复风格")]
+    [Range(0f, 2f)]
+    [Tooltip("越高越有变化。亲戚闲聊建议 1.1~1.3。")]
+    public float temperature = 1.2f;
+    [Range(0f, 1f)]
+    public float topP = 0.9f;
+    [Range(-2f, 2f)]
+    [Tooltip("减少口头禅和固定句式的重复。")]
+    public float frequencyPenalty = 0.35f;
+    [Range(-2f, 2f)]
+    [Tooltip("让对话更愿意自然地引出新话题。")]
+    public float presencePenalty = 0.15f;
+    [Min(32)]
+    [Tooltip("限制回答长度，避免亲戚突然开始写小作文。")]
+    public int maxTokens = 160;
 
     [Header("对话历史(多轮会话) ")]
     public List<ChatMessage> messageHistory = new List<ChatMessage>();
@@ -98,7 +119,12 @@ public class DeepSeekChatClient : MonoBehaviour
         DeepSeekRequest requestData = new DeepSeekRequest
         {
             model = string.IsNullOrEmpty(model) ? "deepseek-chat" : model,
-            messages = messageHistory
+            messages = messageHistory,
+            temperature = temperature,
+            top_p = topP,
+            frequency_penalty = frequencyPenalty,
+            presence_penalty = presencePenalty,
+            max_tokens = maxTokens
         };
 
         string jsonBody = JsonUtility.ToJson(requestData);
