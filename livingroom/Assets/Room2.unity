@@ -7591,7 +7591,7 @@ GameObject:
   - component: {fileID: 375182342}
   - component: {fileID: 375182341}
   - component: {fileID: 375182340}
-  - component: {fileID: 375182339}
+  - component: {fileID: 375182343}
   m_Layer: 5
   m_Name: VoiceButton
   m_TagString: Untagged
@@ -7619,19 +7619,6 @@ RectTransform:
   m_AnchoredPosition: {x: 248, y: 0}
   m_SizeDelta: {x: 200, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &375182339
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 375182337}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8477cf13ee2593848a2aaab7c7b1eec5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  voiceInputManager: {fileID: 1214507640}
 --- !u!114 &375182340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7726,6 +7713,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 375182337}
   m_CullTransparentMesh: 1
+--- !u!114 &375182343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375182337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa7f9b8b787f01241a70eb1dd1167b39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resultText: {fileID: 0}
+  resultInputField: {fileID: 0}
 --- !u!1001 &376238879
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29874,7 +29875,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1851287273}
   m_Direction: 0
   m_Value: 1
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
